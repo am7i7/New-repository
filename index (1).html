@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>حنتوشي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: sticky header with language switch, compact hero, offers strip, filterable catalog, order form that builds a WhatsApp message, bottom cart bar. */
+:root{
+  --bg:#FBF7F6; --surface:#FFFFFF; --fg:#241615; --muted:#6E5A58; --line:#EBDCDA;
+  --brand:#C62828; --brand-fg:#FFFFFF; --accent:#F0B429; --accent-fg:#2A2008; --tint:#FBEAE8; --sale:#C62828;
+  --font:"Rubik",system-ui,"Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A1010; --surface:#251817; --fg:#F5E9E8; --muted:#BDA3A0; --line:#3B2826;
+    --brand:#D93A40; --brand-fg:#FFFFFF; --tint:#2E1D1C; --sale:#FF8A80; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A1010; --surface:#251817; --fg:#F5E9E8; --muted:#BDA3A0; --line:#3B2826;
+  --brand:#D93A40; --brand-fg:#FFFFFF; --tint:#2E1D1C; --sale:#FF8A80; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--font); font-size:16px; line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 84px;
+}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin-inline:auto}
+.num{direction:ltr;unicode-bidi:isolate;display:inline-block;font-variant-numeric:tabular-nums}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.5rem;color:var(--brand);text-decoration:none}
+.logo i{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--brand);color:var(--brand-fg);font-style:normal;font-size:1.25rem}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:none;padding:8px 16px;cursor:pointer;font-weight:500;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--brand);color:var(--brand-fg)}
+
+.hero{padding-block:36px 28px;display:grid;gap:14px;max-width:46rem}
+.hero h1{margin:0;font-size:clamp(2rem,6vw,3.1rem);line-height:1.15;font-weight:800;text-wrap:balance}
+.hero p{margin:0;color:var(--muted);font-size:1.1rem;max-width:36rem}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:12px 20px;font-weight:700;cursor:pointer;text-decoration:none;background:var(--brand);color:var(--brand-fg)}
+.btn.alt{background:var(--accent);color:var(--accent-fg)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--fg)}
+.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+
+section{padding-block:26px}
+h2{margin:0 0 14px;font-size:1.5rem;font-weight:800}
+.sub{color:var(--muted);margin:-8px 0 16px}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0;position:relative}
+.pic{height:104px;overflow:hidden;border-radius:10px;background:var(--tint);display:grid;place-items:center;font-size:2.6rem}
+.pic.photo{background:#fff}.pic img{max-width:100%;max-height:100%;object-fit:contain}
+.badge{position:absolute;top:18px;inset-inline-start:18px;background:var(--accent);color:var(--accent-fg);font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:999px}
+.card h3{margin:0;font-size:1rem;font-weight:700;line-height:1.3}
+.unit{color:var(--muted);font-size:.85rem}
+.price{display:flex;align-items:baseline;gap:8px;margin-top:auto;font-weight:800;font-size:1.15rem}
+.price s{color:var(--muted);font-weight:400;font-size:.9rem}
+.add{border:0;background:var(--brand);color:var(--brand-fg);border-radius:10px;padding:8px;font-weight:700;cursor:pointer}
+.step{display:flex;align-items:center;justify-content:space-between;background:var(--tint);border-radius:10px;padding:2px}
+.step button{width:38px;height:36px;border:0;border-radius:8px;background:var(--brand);color:var(--brand-fg);font-size:1.2rem;font-weight:700;cursor:pointer}
+.step b{min-width:2ch;text-align:center}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:16px}
+.lines{display:grid;gap:10px}
+.line{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.line .step{min-width:112px}
+.line span.t{min-width:0;overflow-wrap:anywhere}
+.total{display:flex;justify-content:space-between;font-size:1.25rem;font-weight:800}
+.empty{color:var(--muted);text-align:center;padding:14px}
+.fields{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+label{display:grid;gap:4px;font-weight:500;font-size:.95rem;min-width:0}
+input[type=text],textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px}
+textarea{min-height:70px;resize:vertical}
+.mode{display:flex;gap:8px;flex-wrap:wrap}
+.mode label{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;background:var(--bg)}
+.mode input{accent-color:var(--brand)}
+.note{color:var(--muted);font-size:.9rem;margin:0}
+
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.info .panel{gap:6px}
+.info h3{margin:0;font-size:1.05rem}
+.info p{margin:0;color:var(--muted)}
+footer{padding-block:24px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
+
+.cartbar{position:fixed;inset-inline:0;bottom:0;z-index:6;background:var(--brand);color:var(--brand-fg);
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;font-weight:700}
+.cartbar[hidden]{display:none!important}
+.cartbar .go{background:var(--accent);color:var(--accent-fg);border-radius:10px;padding:8px 16px}
+@media (prefers-reduced-motion:no-preference){.card,.btn,.add{transition:transform .12s}.card:hover{transform:translateY(-2px)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top"><i>ح</i><span data-i="brand"></span></a>
+    <div class="lang" role="group" aria-label="Language / שפה / اللغة">
+      <button type="button" data-lang="ar" aria-pressed="true">العربية</button>
+      <button type="button" data-lang="he" aria-pressed="false">עברית</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <div class="hero">
+    <h1 data-i="h1"></h1>
+    <p data-i="lead"></p>
+    <div class="cta">
+      <a class="btn" href="#catalog" data-i="ctaShop"></a>
+      <a class="btn alt" href="#offers" data-i="ctaOffers"></a>
+    </div>
+  </div>
+
+  <section id="offers">
+    <h2 data-i="offers"></h2>
+    <p class="sub" data-i="offersSub"></p>
+    <div class="grid" id="offerGrid"></div>
+  </section>
+
+  <section id="catalog">
+    <h2 data-i="catalog"></h2>
+    <div class="chips" id="chips" role="group"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="order">
+    <h2 data-i="order"></h2>
+    <div class="panel">
+      <div class="lines" id="lines"></div>
+      <div class="total" id="totalRow" hidden><span data-i="total"></span><span class="num" id="total"></span></div>
+      <div class="mode" role="radiogroup">
+        <label><input type="radio" name="mode" value="delivery" checked><span data-i="delivery"></span></label>
+        <label><input type="radio" name="mode" value="pickup"><span data-i="pickup"></span></label>
+      </div>
+      <div class="fields">
+        <label><span data-i="name"></span><input type="text" id="cname" autocomplete="name"></label>
+        <label id="addrWrap"><span data-i="address"></span><input type="text" id="caddr" autocomplete="street-address"></label>
+      </div>
+      <label><span data-i="notes"></span><textarea id="cnotes"></textarea></label>
+      <a class="btn" id="send" href="#order" target="_blank" rel="noopener" aria-disabled="true" data-i="send"></a>
+      <p class="note" data-i="sendNote"></p>
+    </div>
+  </section>
+
+  <section id="info">
+    <h2 data-i="visit"></h2>
+    <div class="info">
+      <div class="panel"><h3 data-i="hoursT"></h3><p data-i="hours1"></p><p data-i="hours2"></p></div>
+      <div class="panel"><h3 data-i="whyT"></h3><p data-i="why"></p></div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span data-i="brand"></span> · <span data-i="foot"></span></div></footer>
+
+<a class="cartbar" href="#order" id="cartbar" hidden>
+  <span><span id="cbCount" class="num"></span> <span data-i="items"></span> · <span id="cbTotal" class="num"></span></span>
+  <span class="go" data-i="viewCart"></span>
+</a>
+
+<script>
+// Set the shop's WhatsApp number here, digits only with country code, e.g. "972501234567". Empty means the customer picks the contact in WhatsApp.
+var WHATSAPP_NUMBER = "";
+
+var T = {
+  ar:{brand:"حنتوشي",h1:"كل احتياجات بيتك بسعر عادل",lead:"خضار وفواكه طازجة، مخبوزات كل صباح، وكل ما يلزم المطبخ. اختر منتجاتك وأرسل الطلب لنا عبر واتساب.",
+    ctaShop:"تسوّق الآن",ctaOffers:"عروض الأسبوع",offers:"عروض الأسبوع",offersSub:"أسعار مخفّضة لفترة محدودة.",catalog:"المنتجات",all:"الكل",
+    order:"طلبك",empty:"السلة فارغة. أضف منتجات من القائمة.",total:"المجموع",delivery:"توصيل",pickup:"استلام من المحل",
+    name:"الاسم",address:"العنوان",notes:"ملاحظات (اختياري)",send:"أرسل الطلب عبر واتساب",sendNote:"سيُفتح واتساب مع رسالة جاهزة. نؤكد لك الطلب والسعر النهائي هناك.",
+    visit:"زورونا",hoursT:"ساعات الدوام",hours1:"السبت – الخميس: 07:00 – 22:00",hours2:"الجمعة: 07:00 – 15:00",
+    whyT:"لماذا حنتوشي",why:"منتجات طازجة كل يوم، أسعار واضحة، وخدمة سريعة لأهل الحي.",foot:"سوبر ماركت",items:"منتج",viewCart:"عرض السلة",add:"أضف",sale:"عرض",
+    msgHead:"طلب جديد من موقع حنتوشي",msgName:"الاسم",msgMode:"الطريقة",msgAddr:"العنوان",msgNotes:"ملاحظات",msgTotal:"المجموع"},
+  he:{brand:"חנתושי",h1:"כל מה שהבית צריך, במחיר הוגן",lead:"ירקות ופירות טריים, מאפים בכל בוקר וכל מה שצריך למטבח. בחרו מוצרים ושלחו לנו את ההזמנה בוואטסאפ.",
+    ctaShop:"לקניות",ctaOffers:"מבצעי השבוע",offers:"מבצעי השבוע",offersSub:"מחירים מוזלים לזמן מוגבל.",catalog:"מוצרים",all:"הכול",
+    order:"ההזמנה שלך",empty:"הסל ריק. הוסיפו מוצרים מהרשימה.",total:"סה״כ",delivery:"משלוח",pickup:"איסוף מהחנות",
+    name:"שם",address:"כתובת",notes:"הערות (לא חובה)",send:"שליחת ההזמנה בוואטסאפ",sendNote:"וואטסאפ ייפתח עם הודעה מוכנה. נאשר את ההזמנה ואת המחיר הסופי שם.",
+    visit:"בואו לבקר",hoursT:"שעות פתיחה",hours1:"שבת – חמישי: 07:00 – 22:00",hours2:"שישי: 07:00 – 15:00",
+    whyT:"למה חנתושי",why:"מוצרים טריים כל יום, מחירים ברורים ושירות מהיר לתושבי השכונה.",foot:"סופרמרקט",items:"פריטים",viewCart:"לסל",add:"הוספה",sale:"מבצע",
+    msgHead:"הזמנה חדשה מאתר חנתושי",msgName:"שם",msgMode:"אופן קבלה",msgAddr:"כתובת",msgNotes:"הערות",msgTotal:"סה״כ"}
+};
+var CATS = [
+  {id:"produce",ar:"خضار وفواكه",he:"ירקות ופירות"},
+  {id:"dairy",ar:"ألبان وبيض",he:"חלב וביצים"},
+  {id:"bakery",ar:"مخبوزات",he:"מאפים"},
+  {id:"meat",ar:"لحوم ودجاج",he:"בשר ועוף"},
+  {id:"pantry",ar:"مواد جافة",he:"מוצרים יבשים"},
+  {id:"drinks",ar:"مشروبات",he:"משקאות"},
+  {id:"clean",ar:"منظفات",he:"ניקיון"}
+];
+// Prices in shekels. "old" marks a weekly offer.
+var P = [
+  {id:"tom",c:"produce",e:"🍅",ar:"بندورة",he:"עגבניות",ua:"للكيلو",uh:"לק״ג",p:6.9,old:9.9},
+  {id:"cuc",c:"produce",e:"🥒",ar:"خيار",he:"מלפפונים",ua:"للكيلو",uh:"לק״ג",p:5.9},
+  {id:"pot",c:"produce",e:"🥔",ar:"بطاطا",he:"תפוחי אדמה",ua:"للكيلو",uh:"לק״ג",p:4.5},
+  {id:"app",c:"produce",e:"🍎",ar:"تفاح",he:"תפוחים",ua:"للكيلو",uh:"לק״ג",p:8.9},
+  {id:"ban",c:"produce",e:"🍌",ar:"موز",he:"בננות",ua:"للكيلو",uh:"לק״ג",p:7.5,old:9.5},
+  {id:"mil",c:"dairy",e:"🥛",ar:"حليب 3%",he:"חלב 3%",ua:"لتر",uh:"ליטר",p:6.2},
+  {id:"lab",c:"dairy",e:"🧀",ar:"لبنة",he:"לבנה",ua:"عبوة 500 غم",uh:"מארז 500 גרם",p:12.9},
+  {id:"egg",c:"dairy",e:"🥚",ar:"بيض",he:"ביצים",ua:"علبة 12",uh:"תבנית 12",p:14.9,old:17.9},
+  {id:"pit",c:"bakery",e:"🫓",ar:"خبز عربي",he:"פיתות",ua:"كيس 6 حبات",uh:"שקית 6 יחידות",p:8},
+  {id:"kaa",c:"bakery",e:"🥖",ar:"كعك بالسمسم",he:"קעק בשומשום",ua:"قطعة",uh:"יחידה",p:3.5},
+  {id:"chi",c:"meat",e:"🍗",ar:"صدور دجاج",he:"חזה עוף",ua:"للكيلو",uh:"לק״ג",p:32.9,old:36.9},
+  {id:"min",c:"meat",e:"🥩",ar:"لحمة مفرومة",he:"בשר טחון",ua:"للكيلو",uh:"לק״ג",p:54.9},
+  {id:"ric",c:"pantry",e:"🍚",ar:"رز مصري",he:"אורז",ua:"كيس 1 كغم",uh:"שק 1 ק״ג",p:9.9},
+  {id:"oil",c:"pantry",e:"🫒",ar:"زيت زيتون",he:"שמן זית",ua:"زجاجة 750 مل",uh:"בקבוק 750 מ״ל",p:39.9},
+  {id:"cof",c:"drinks",e:"☕",ar:"قهوة عربية",he:"קפה ערבי",ua:"عبوة 200 غم",uh:"מארז 200 גרם",p:16.9},
+  {id:"wat",c:"drinks",e:"💧",ar:"مياه معدنية",he:"מים מינרליים",ua:"6 × 1.5 لتر",uh:"6 × 1.5 ליטר",p:15.9},
+  {id:"dsh",c:"clean",e:"🧴",ar:"سائل جلي",he:"נוזל כלים",ua:"زجاجة 1 لتر",uh:"בקבוק 1 ליטר",p:11.9},
+  {id:"tis",c:"clean",e:"🧻",ar:"محارم ورقية",he:"מגבונים נייר",ua:"8 رولات",uh:"8 גלילים",p:19.9}
+];
+var IMG = {mil:"data:image/webp;base64,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"};
+var lang = "ar", cat = "all", cart = {}, lastFocus = null;
+var $ = function(id){return document.getElementById(id)};
+function money(n){return "₪" + n.toFixed(2).replace(/\.00$/,"")}
+function find(id){return P.filter(function(x){return x.id===id})[0]}
+function cartLines(){return Object.keys(cart).filter(function(k){return cart[k]>0}).map(function(k){return {p:find(k),q:cart[k]}})}
+function cartTotal(){return cartLines().reduce(function(s,l){return s+l.p.p*l.q},0)}
+
+function cardHTML(x, inOffers){
+  var t = T[lang], q = cart[x.id]||0;
+  var ctl = q>0
+    ? '<div class="step"><button type="button" data-act="dec" data-id="'+x.id+'" aria-label="−">−</button><b class="num">'+q+'</b><button type="button" data-act="inc" data-id="'+x.id+'" aria-label="+">+</button></div>'
+    : '<button type="button" class="add" data-act="inc" data-id="'+x.id+'">'+t.add+'</button>';
+  return '<div class="card">'+(x.old?'<span class="badge">'+t.sale+'</span>':'')+
+    (IMG[x.id]?'<div class="pic photo"><img src="'+IMG[x.id]+'" alt=""></div>':'<div class="pic" aria-hidden="true">'+x.e+'</div>')+'<h3>'+x[lang]+'</h3><div class="unit">'+(lang==="ar"?x.ua:x.uh)+'</div>'+
+    '<div class="price"><span class="num">'+money(x.p)+'</span>'+(x.old?'<s class="num">'+money(x.old)+'</s>':'')+'</div>'+ctl+'</div>';
+}
+function render(){
+  var t = T[lang];
+  document.documentElement.lang = lang; document.documentElement.dir = "rtl";
+  document.title = t.brand;
+  document.querySelectorAll("[data-i]").forEach(function(n){n.textContent = t[n.getAttribute("data-i")]});
+  document.querySelectorAll("[data-lang]").forEach(function(b){b.setAttribute("aria-pressed", String(b.getAttribute("data-lang")===lang))});
+  $("chips").innerHTML = [{id:"all",ar:t.all,he:t.all}].concat(CATS).map(function(c){
+    return '<button type="button" class="chip" data-cat="'+c.id+'" aria-pressed="'+(cat===c.id)+'">'+c[lang]+'</button>'}).join("");
+  $("offerGrid").innerHTML = P.filter(function(x){return x.old}).map(cardHTML).join("");
+  $("grid").innerHTML = P.filter(function(x){return cat==="all"||x.c===cat}).map(cardHTML).join("");
+  renderCart();
+  if(lastFocus){var el=document.querySelector(lastFocus); if(el) el.focus(); lastFocus=null;}
+}
+function renderCart(){
+  var t = T[lang], ls = cartLines(), tot = cartTotal(), count = ls.reduce(function(s,l){return s+l.q},0);
+  $("lines").innerHTML = ls.length ? ls.map(function(l){
+    return '<div class="line"><span class="t">'+l.p[lang]+' <span class="unit">· '+(lang==="ar"?l.p.ua:l.p.uh)+'</span></span>'+
+      '<span class="step"><button type="button" data-act="dec" data-id="'+l.p.id+'" aria-label="−">−</button><b class="num">'+l.q+'</b><button type="button" data-act="inc" data-id="'+l.p.id+'" aria-label="+">+</button></span>'+
+      '<b class="num">'+money(l.p.p*l.q)+'</b></div>'}).join("") : '<div class="empty">'+t.empty+'</div>';
+  $("totalRow").hidden = !ls.length; $("total").textContent = money(tot);
+  $("cartbar").hidden = !ls.length; $("cbCount").textContent = count; $("cbTotal").textContent = money(tot);
+  var mode = document.querySelector("input[name=mode]:checked").value;
+  $("addrWrap").hidden = mode!=="delivery";
+  var msg = t.msgHead+"\n\n"+ls.map(function(l){return "• "+l.p[lang]+" ("+(lang==="ar"?l.p.ua:l.p.uh)+") × "+l.q+" = "+money(l.p.p*l.q)}).join("\n")+
+    "\n\n"+t.msgTotal+": "+money(tot)+"\n"+t.msgMode+": "+(mode==="delivery"?t.delivery:t.pickup);
+  if($("cname").value.trim()) msg += "\n"+t.msgName+": "+$("cname").value.trim();
+  if(mode==="delivery" && $("caddr").value.trim()) msg += "\n"+t.msgAddr+": "+$("caddr").value.trim();
+  if($("cnotes").value.trim()) msg += "\n"+t.msgNotes+": "+$("cnotes").value.trim();
+  var a = $("send");
+  a.href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+  a.setAttribute("aria-disabled", String(!ls.length));
+}
+document.addEventListener("click", function(e){
+  var b = e.target.closest("[data-act]");
+  if(b){
+    var id = b.getAttribute("data-id"), act = b.getAttribute("data-act");
+    cart[id] = Math.max(0,(cart[id]||0)+(act==="inc"?1:-1));
+    lastFocus = '[data-act="'+(cart[id]?act:"inc")+'"][data-id="'+id+'"]';
+    render(); return;
+  }
+  var c = e.target.closest("[data-cat]");
+  if(c){cat = c.getAttribute("data-cat"); render(); return;}
+  var l = e.target.closest("[data-lang]");
+  if(l){lang = l.getAttribute("data-lang"); try{localStorage.setItem("hlang",lang)}catch(_){} render();}
+});
+["cname","caddr","cnotes"].forEach(function(id){$(id).addEventListener("input", renderCart)});
+document.querySelectorAll("input[name=mode]").forEach(function(r){r.addEventListener("change", renderCart)});
+try{var s = localStorage.getItem("hlang"); if(s==="ar"||s==="he") lang = s;}catch(_){}
+render();
+</script>
+</body>
+</html>
